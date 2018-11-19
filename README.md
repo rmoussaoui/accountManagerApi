@@ -26,6 +26,6 @@ POST  http://localhost:8080/account-manager/v1/accounts/2222/transactions
 {
 	"amount":200,
 	"transactionType": "W",
-	"details":"Salaire du mois dernier."
+	"details":"Pour les courses."
 }
 
