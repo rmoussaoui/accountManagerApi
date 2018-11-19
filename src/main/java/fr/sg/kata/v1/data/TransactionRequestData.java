@@ -6,7 +6,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import fr.sg.kata.v1.models.TransactionType;
+import lombok.Data;
 
+@Data
 public class TransactionRequestData {
 	
 	@NotNull(message="{transaction.amount.not.null}")
@@ -15,22 +17,4 @@ public class TransactionRequestData {
 	private TransactionType transactionType;
 	private String details;
 	
-	public BigDecimal getAmount() {
-		return amount;
-	}
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
-	public TransactionType getTransactionType() {
-		return transactionType;
-	}
-	public void setTransactionType(TransactionType transactionType) {
-		this.transactionType = transactionType;
-	}
-	public String getDetails() {
-		return details;
-	}
-	public void setDetails(String details) {
-		this.details = details;
-	}
 }
