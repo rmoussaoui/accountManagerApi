@@ -46,11 +46,6 @@ public class ControllerIntegrationTest {
 	}
 	
 	@Test
-	public void test() {
-		assertTrue(true);
-	}
-	
-	@Test
 	@Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = "/cleantransactions.sql")
 	public void testDoTransaction() {
 		
