@@ -15,6 +15,7 @@ public class TransactionData {
 	private String firstname;
 	private BigDecimal amount;
 	private BigDecimal accountBalance;
+	 @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	private LocalDate transactionDate;
 	private TransactionType transactionType;
 	private String details;

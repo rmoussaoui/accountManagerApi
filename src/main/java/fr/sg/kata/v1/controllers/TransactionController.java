@@ -71,8 +71,8 @@ public class TransactionController {
 	@GetMapping(value="{accountId}/transactions")
 	public ResponseEntity<Collection<TransactionData>> getTransactionsLog(
 			@PathVariable(value="accountId", required=true) String accountId,
-			@RequestParam(value="start",required=false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate startDate, 
-			@RequestParam(value="end",required=false) @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate endDate) throws AccountNotFoundException {
+			@RequestParam(value="start",required=false) @DateTimeFormat(pattern="dd-MM-yyyy") LocalDate startDate, 
+			@RequestParam(value="end",required=false) @DateTimeFormat(pattern="dd-MM-yyyy") LocalDate endDate) throws AccountNotFoundException {
 		
 		Collection<TransactionData> ctransactionDto = transactionConverter.convertAll(accountService.getAccountHistory(accountId, startDate, endDate));
 		
