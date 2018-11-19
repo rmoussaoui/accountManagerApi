@@ -1,6 +1,7 @@
 package fr.sg.kata.v1.controllers;
 
 import static org.junit.Assert.assertTrue;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import fr.sg.kata.v1.data.TransactionData;
 import fr.sg.kata.v1.data.TransactionRequestData;
 import fr.sg.kata.v1.models.TransactionType;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
@@ -78,7 +80,7 @@ public class ControllerIntegrationTest {
 	public void testAccountHistoryWithDateRange() {
 		Map<String, String> map = new HashMap<String, String>();
         map.put("accountId", "1111");
-        url = url.concat("?start=2018-06-09&end=2018-08-09");
+        url = url.concat("?start=09-07-2018&end=11-08-2018");
 
 		ResponseEntity<Collection> history = restTemplate.getForEntity(url, Collection.class, map);
 		
@@ -94,7 +96,7 @@ public class ControllerIntegrationTest {
 	public void testAccountHistoryWithStartDate() {
 		Map<String, String> map = new HashMap<String, String>();
         map.put("accountId", "1111");
-        url = url.concat("?start=2018-06-09");
+        url = url.concat("?start=09-06-2018");
 
 		ResponseEntity<Collection> history = restTemplate.getForEntity(url, Collection.class, map);
 		
@@ -110,7 +112,7 @@ public class ControllerIntegrationTest {
 	public void testAccountHistoryWithEndDate() {
 		Map<String, String> map = new HashMap<String, String>();
         map.put("accountId", "1111");
-        url = url.concat("?end=2018-08-09");
+        url = url.concat("?end=09-08-2018");
 
 		ResponseEntity<Collection> history = restTemplate.getForEntity(url, Collection.class, map);
 		
