@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import fr.sg.kata.v1.services.IMessageService;
 
 @Service
 public class AccountServiceImpl implements IAccountService {
+	
+	Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 	
 	@Autowired
 	private IAccountRepository accountRepository;
@@ -32,6 +36,7 @@ public class AccountServiceImpl implements IAccountService {
 
 		Optional<Account> optAccount = accountRepository.findById(accountId);
 		if (!optAccount.isPresent()) {
+			logger.debug(String.format("Le compte avec numero [%s] est introuvable.", accountId));
 			throw new AccountNotFoundException(messageService.getMessage("account.inexistant", new String[] {accountId}));
 		}
 		
@@ -42,6 +47,7 @@ public class AccountServiceImpl implements IAccountService {
 	public Account getAccountById(String accountId) throws AccountNotFoundException {
 		Optional<Account> optAccount = accountRepository.findById(accountId);
 		if (!optAccount.isPresent()) {
+			logger.debug(String.format("Le compte avec numero [%s] est introuvable.", accountId));
 			throw new AccountNotFoundException(messageService.getMessage("account.inexistant", new String[] {accountId}));
 		}
 		return optAccount.get();

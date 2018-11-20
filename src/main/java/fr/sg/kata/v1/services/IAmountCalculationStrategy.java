@@ -8,7 +8,7 @@ import fr.sg.kata.v1.models.TransactionType;
 public interface IAmountCalculationStrategy {
 	
 	/**
-	 * Computes a new balance basd on a transaction amount and type
+	 * Computes a new balance based on a transaction amount and type
 	 * @param transactionType
 	 * @param balance
 	 * @param amount

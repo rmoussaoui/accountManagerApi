@@ -22,9 +22,12 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import fr.sg.kata.v1.data.TransactionData;
 import fr.sg.kata.v1.data.TransactionRequestData;
+import fr.sg.kata.v1.exception.ApiError;
+import fr.sg.kata.v1.exception.InvalidTransactionRequestDataException;
 import fr.sg.kata.v1.models.TransactionType;
 
 
@@ -127,6 +130,26 @@ public class ControllerIntegrationTest {
 		ResponseEntity<Collection> history = restTemplate.getForEntity(url, Collection.class, map);
 		
 		assertTrue(history.getBody().size() == 8);
+		
+	}
+	
+	
+	@Test
+	@SqlGroup({
+	    @Sql(executionPhase = ExecutionPhase.BEFORE_TEST_METHOD, scripts = "/transactions.sql"),
+	    @Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = "/cleantransactions.sql")
+	})
+	public void testShouldRaiseException() {
+		Map<String, String> map = new HashMap<String, String>();
+        map.put("accountId", "1111");
+		
+		TransactionRequestData transactionRequestData = new TransactionRequestData();
+		transactionRequestData.setAmount(null);
+		transactionRequestData.setTransactionType(TransactionType.D);
+		ResponseEntity<Object> response = restTemplate.postForEntity(url, transactionRequestData, Object.class, map);
+		
+		assertTrue(response.getStatusCode().equals(HttpStatus.UNPROCESSABLE_ENTITY));
+		
 		
 	}
 

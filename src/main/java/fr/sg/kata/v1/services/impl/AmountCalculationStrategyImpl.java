@@ -26,7 +26,7 @@ public class AmountCalculationStrategyImpl implements IAmountCalculationStrategy
 		if (TransactionType.D.equals(transactionType)) {
 			balance = balance.add(amount);
 		}
-		else if (TransactionType.W.equals(transactionType)) {
+		else { 
 			if (balance.compareTo(amount) < 0) {
 				logger.debug("Exception lors du calcul de la nouvele balance du compte. Le montant de la transaction est superieur a la balance actuelle.");
 				throw new InvalidTransactionAmountException(messageService.getMessage("transaction.amount.not.greater.account.balance", new String[] {String.valueOf(balance)}));
