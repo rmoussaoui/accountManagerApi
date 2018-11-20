@@ -6,13 +6,10 @@ import java.util.Collection;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.MethodParameter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +24,6 @@ import fr.sg.kata.v1.data.TransactionData;
 import fr.sg.kata.v1.data.TransactionRequestData;
 import fr.sg.kata.v1.exception.AccountNotFoundException;
 import fr.sg.kata.v1.exception.InvalidTransactionAmountException;
-import fr.sg.kata.v1.exception.InvalidTransactionRequestDataException;
 import fr.sg.kata.v1.models.Transaction;
 import fr.sg.kata.v1.services.IAccountService;
 import fr.sg.kata.v1.services.ITransactionService;
@@ -55,7 +51,7 @@ public class TransactionController {
 	public ResponseEntity<TransactionData> doTransaction(
 			@PathVariable(value="accountId", required=true) String accountId,
 			@Valid @RequestBody TransactionRequestData transactionRequestData,
-			final UriComponentsBuilder uriComponentsBuilder) throws AccountNotFoundException, InvalidTransactionAmountException, InvalidTransactionRequestDataException, NoSuchMethodException, SecurityException, MethodArgumentNotValidException {
+			final UriComponentsBuilder uriComponentsBuilder) throws AccountNotFoundException, InvalidTransactionAmountException  {
 		
 		TransactionData savedTransaction = transactionConverter.convert(transactionService.doTransaction(transactionRequestData, accountId));
 		
@@ -65,7 +61,7 @@ public class TransactionController {
 	    		.buildAndExpand(savedTransaction
 	    		.getTransactionId()).toUri());
 	 
-	    return new ResponseEntity<TransactionData>(savedTransaction, headers, HttpStatus.CREATED);
+	    return new ResponseEntity<>(savedTransaction, headers, HttpStatus.CREATED);
 	}
 	
 	@GetMapping(value="{accountId}/transactions")
@@ -76,7 +72,7 @@ public class TransactionController {
 		
 		Collection<TransactionData> ctransactionDto = transactionConverter.convertAll(accountService.getAccountHistory(accountId, startDate, endDate));
 		
-		return new ResponseEntity<Collection<TransactionData>>(ctransactionDto, HttpStatus.OK);
+		return new ResponseEntity<>(ctransactionDto, HttpStatus.OK);
 		
 	}
 	

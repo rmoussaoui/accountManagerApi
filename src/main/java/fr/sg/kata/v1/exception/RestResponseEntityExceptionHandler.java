@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,10 +41,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 			  HttpStatus status, WebRequest request) {
 
 		  BindingResult result = ex.getBindingResult();
-		List<ApiSubError> apiSubErrors = new ArrayList<ApiSubError>();
-		result.getFieldErrors().forEach(fieldError -> {
-			apiSubErrors.add(new ApiValidationError(fieldError.getField(), fieldError.getDefaultMessage()));
-		});
+		List<ApiSubError> apiSubErrors = new ArrayList<>();
+		result.getFieldErrors().forEach(fieldError -> apiSubErrors.add(new ApiValidationError(fieldError.getField(), fieldError.getDefaultMessage())));
 		String validationMessage = messageService.getMessage("invalid.parameters.exception");
 	    ApiError errorDetails = new ApiError(LocalDate.now(), validationMessage, apiSubErrors, request.getDescription(false));
 	    return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);

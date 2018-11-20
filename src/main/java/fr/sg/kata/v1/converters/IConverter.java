@@ -8,16 +8,16 @@ import java.util.List;
  * A generic converter
  * @author r.moussaoui
  *
- * @param <SOURCE>
- * @param <TARGET>
+ * @param <T>
+ * @param <K>
  */
 
-public interface IConverter<SOURCE,TARGET> {
+public interface IConverter<T,K> {
 	
-	TARGET convert(SOURCE s);
+	K convert(T s);
 	
-	default Collection<TARGET> convertAll(Collection<SOURCE> csource) {
-		List<TARGET> result = new ArrayList<>();
+	default Collection<K> convertAll(Collection<T> csource) {
+		List<K> result = new ArrayList<>();
 		
 		csource.forEach(item -> result.add(convert(item)));
 		
