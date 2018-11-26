@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import fr.sg.kata.utils.TestUtils;
 import fr.sg.kata.v1.data.TransactionRequestData;
 import fr.sg.kata.v1.exception.AccountNotFoundException;
 import fr.sg.kata.v1.exception.InvalidTransactionAmountException;
@@ -33,7 +32,8 @@ public class TransactionServiceIntegrationTest {
 
 	@Test
 	public void testDoTransaction() throws AccountNotFoundException, InvalidTransactionAmountException {
-		 TransactionRequestData transactionRequest = TestUtils.createTransactionRequestData(new BigDecimal("500"), "", TransactionType.W);
+		 
+		 TransactionRequestData transactionRequest = new TransactionRequestData(new BigDecimal("500"), TransactionType.W, "");
 		 Transaction savedTransaction = transactionService.doTransaction(transactionRequest, ACCOUNT_ID);
 		 assertTrue(savedTransaction.getAmount().equals(new BigDecimal("500")));
 		 assertTrue(savedTransaction.getAccountBalance().equals(accountService.getAccountById(ACCOUNT_ID).getBalance()));
@@ -41,7 +41,7 @@ public class TransactionServiceIntegrationTest {
 	
 	@Test(expected = InvalidTransactionAmountException.class)
 	public void testTransactionAmountGreaterThanMaxAllowed() throws AccountNotFoundException, InvalidTransactionAmountException {
-		 TransactionRequestData transactionRequest = TestUtils.createTransactionRequestData(new BigDecimal("31000"), "", TransactionType.W);
+		 TransactionRequestData transactionRequest = new TransactionRequestData(new BigDecimal("31000"), TransactionType.W, "");
 		 transactionService.doTransaction(transactionRequest, ACCOUNT_ID);
 	}
 	

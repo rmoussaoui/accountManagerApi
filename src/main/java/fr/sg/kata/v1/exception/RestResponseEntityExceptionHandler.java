@@ -34,7 +34,15 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	    ApiError errorDetails = new ApiError(LocalDate.now(), ex.getMessage(), request.getDescription(false));
 	    return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);
 	  }
-	
+
+	  @ExceptionHandler(AccountOperationNotAllowedException.class)
+	  public final ResponseEntity<Object> handleAccountOperationNotAllowedException(
+			  AccountOperationNotAllowedException ex, WebRequest request) {
+
+		    ApiError errorDetails = new ApiError(LocalDate.now(), ex.getMessage(), request.getDescription(false));
+		    return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);
+	  }
+
 	  @Override
 	  public final ResponseEntity<Object> handleMethodArgumentNotValid(
 			  MethodArgumentNotValidException ex, HttpHeaders headers, 
@@ -48,6 +56,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	    return new ResponseEntity<>(errorDetails, HttpStatus.UNPROCESSABLE_ENTITY);
 	  }
 	
+	  
 
 	
 }

@@ -1,18 +1,16 @@
 package fr.sg.kata.v1.models;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
 
 @Data
 @Entity
-public class Client {
-	
-	@Id
-	private String clientId;
-	private String username;
-	private String password;
+@Table(name="client")
+@DiscriminatorValue("client")
+public class Client extends User{
 	private String firstname;
 	private String lastname;
 }

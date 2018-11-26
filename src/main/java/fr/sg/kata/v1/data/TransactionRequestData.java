@@ -6,9 +6,17 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import fr.sg.kata.v1.models.TransactionType;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class TransactionRequestData {
 	
 	@NotNull(message="{transaction.amount.not.null}")

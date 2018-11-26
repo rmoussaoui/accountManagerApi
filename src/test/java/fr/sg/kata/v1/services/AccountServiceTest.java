@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import fr.sg.kata.utils.TestUtils;
 import fr.sg.kata.v1.exception.AccountNotFoundException;
 import fr.sg.kata.v1.models.Account;
 import fr.sg.kata.v1.models.Client;
@@ -63,7 +62,8 @@ public class AccountServiceTest {
 	@Test
 	public void shouldReturnRightAccount() throws AccountNotFoundException {
 		
-		Account account = TestUtils.createAccount(ACCOUNT_ID, new BigDecimal("1000"));
+		Account account = new Account(ACCOUNT_ID, new BigDecimal("1000"), new Client());
+		
 		Mockito.when(accountRepository.findById(Mockito.anyString())).thenReturn(Optional.of(account));
 		Account returnedAccount = accountService.getAccountById(ACCOUNT_ID);
 		assertTrue(account.equals(returnedAccount));
@@ -71,13 +71,13 @@ public class AccountServiceTest {
 	
 	@Test
 	public void shouldReturnRightAccountHistory() throws AccountNotFoundException {
-		Account account1 = TestUtils.createAccount(ACCOUNT_ID, new BigDecimal("1000"));
+		Account account1 = new Account(ACCOUNT_ID, new BigDecimal("1000"), new Client());
+				
+		Transaction transaction1 = new Transaction(Long.valueOf(123), new BigDecimal("100"), new BigDecimal("1000")
+				, TransactionType.D, LocalDate.now().minusDays(10), "Details about transaction 123", account1);
 		
-		Transaction transaction1 = TestUtils.createTransaction(Long.valueOf(123), TransactionType.D, account1
-				, new BigDecimal("100"), new BigDecimal("1000"), LocalDate.now().minusDays(10));
-		
-		Transaction transaction2 = TestUtils.createTransaction(Long.valueOf(456), TransactionType.W, account1
-				, new BigDecimal("120"), new BigDecimal("2500"), LocalDate.now().minusDays(5));
+		Transaction transaction2 = new Transaction(Long.valueOf(456), new BigDecimal("120"), new BigDecimal("2500")
+				, TransactionType.W, LocalDate.now().minusDays(5), "Details about transaction 456", account1);
 		
 		List<Transaction> transactionList = Arrays.asList(transaction1, transaction2);
 		

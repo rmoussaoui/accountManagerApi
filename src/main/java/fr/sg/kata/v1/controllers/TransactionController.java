@@ -10,6 +10,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +25,18 @@ import fr.sg.kata.v1.converters.IConverter;
 import fr.sg.kata.v1.data.TransactionData;
 import fr.sg.kata.v1.data.TransactionRequestData;
 import fr.sg.kata.v1.exception.AccountNotFoundException;
+import fr.sg.kata.v1.exception.AccountOperationNotAllowedException;
 import fr.sg.kata.v1.exception.InvalidTransactionAmountException;
+import fr.sg.kata.v1.models.Account;
 import fr.sg.kata.v1.models.Transaction;
 import fr.sg.kata.v1.services.IAccountService;
+import fr.sg.kata.v1.services.IClientService;
 import fr.sg.kata.v1.services.ITransactionService;
+import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("account-manager/v1/accounts")
+@Api( description="API pour les opérations sur les transactions.")
 public class TransactionController {
 	
 	
@@ -46,13 +53,25 @@ public class TransactionController {
 	@Autowired
 	private IAccountService accountService;
 	
-
+	@Autowired
+	private IClientService clientService;
+	
 	@PostMapping("{accountId}/transactions")
 	public ResponseEntity<TransactionData> doTransaction(
 			@PathVariable(value="accountId", required=true) String accountId,
 			@Valid @RequestBody TransactionRequestData transactionRequestData,
-			final UriComponentsBuilder uriComponentsBuilder) throws AccountNotFoundException, InvalidTransactionAmountException  {
+			final UriComponentsBuilder uriComponentsBuilder) throws AccountNotFoundException, AccountOperationNotAllowedException, InvalidTransactionAmountException  {
 		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String currentUsername = authentication.getName();
+		
+		if (clientService.isClient(currentUsername)) {
+			Account account = accountService.getAccountById(accountId);
+			if (!account.getOwner().getUsername().equals(currentUsername)) {
+				throw new AccountOperationNotAllowedException(String.format("User %s is not allowed on account %s", currentUsername, accountId ));
+			}
+		}
+			
 		TransactionData savedTransaction = transactionConverter.convert(transactionService.doTransaction(transactionRequestData, accountId));
 		
 		final HttpHeaders headers = new HttpHeaders();
@@ -68,8 +87,18 @@ public class TransactionController {
 	public ResponseEntity<Collection<TransactionData>> getTransactionsLog(
 			@PathVariable(value="accountId", required=true) String accountId,
 			@RequestParam(value="start",required=false) @DateTimeFormat(pattern="dd-MM-yyyy") LocalDate startDate, 
-			@RequestParam(value="end",required=false) @DateTimeFormat(pattern="dd-MM-yyyy") LocalDate endDate) throws AccountNotFoundException {
+			@RequestParam(value="end",required=false) @DateTimeFormat(pattern="dd-MM-yyyy") LocalDate endDate) throws AccountOperationNotAllowedException, AccountNotFoundException {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String currentUsername = authentication.getName();
 		
+		if (clientService.isClient(currentUsername)) {
+			Account account = accountService.getAccountById(accountId);
+			if (!account.getOwner().getUsername().equals(currentUsername)) {
+				throw new AccountOperationNotAllowedException(String.format("User %s is not allowed on account %s", currentUsername, accountId ));
+			}
+		}
+
 		Collection<TransactionData> ctransactionDto = transactionConverter.convertAll(accountService.getAccountHistory(accountId, startDate, endDate));
 		
 		return new ResponseEntity<>(ctransactionDto, HttpStatus.OK);

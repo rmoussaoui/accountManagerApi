@@ -18,18 +18,15 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import fr.sg.kata.v1.data.TransactionData;
 import fr.sg.kata.v1.data.TransactionRequestData;
-import fr.sg.kata.v1.exception.ApiError;
-import fr.sg.kata.v1.exception.InvalidTransactionRequestDataException;
 import fr.sg.kata.v1.models.TransactionType;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
@@ -49,6 +46,7 @@ public class ControllerIntegrationTest {
 	}
 	
 	@Test
+	@WithMockUser(username = "john.doe", authorities = { "CLIENT" })
 	@Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = "/cleantransactions.sql")
 	public void testDoTransaction() {
 		
