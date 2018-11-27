@@ -28,10 +28,8 @@ public class UserServiceImpl implements UserDetailsService, IUserService {
 		User user = userRepository.findByUsername(username);
 		
 		Collection<GrantedAuthority> authorities = new ArrayList<>();
-		
-		//authorities.add(new SimpleGrantedAuthority(user.getRole()));
-		
-		authorities.add(new SimpleGrantedAuthority("CLIENT"));
+				
+		authorities.add(new SimpleGrantedAuthority(user.getRole()));
 		
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
 	}

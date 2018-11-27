@@ -62,16 +62,8 @@ public class TransactionController {
 			@Valid @RequestBody TransactionRequestData transactionRequestData,
 			final UriComponentsBuilder uriComponentsBuilder) throws AccountNotFoundException, AccountOperationNotAllowedException, InvalidTransactionAmountException  {
 		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String currentUsername = authentication.getName();
+		checkClientAllowanceOnAccount(SecurityContextHolder.getContext().getAuthentication(), accountId);
 		
-		if (clientService.isClient(currentUsername)) {
-			Account account = accountService.getAccountById(accountId);
-			if (!account.getOwner().getUsername().equals(currentUsername)) {
-				throw new AccountOperationNotAllowedException(String.format("User %s is not allowed on account %s", currentUsername, accountId ));
-			}
-		}
-			
 		TransactionData savedTransaction = transactionConverter.convert(transactionService.doTransaction(transactionRequestData, accountId));
 		
 		final HttpHeaders headers = new HttpHeaders();
@@ -89,8 +81,16 @@ public class TransactionController {
 			@RequestParam(value="start",required=false) @DateTimeFormat(pattern="dd-MM-yyyy") LocalDate startDate, 
 			@RequestParam(value="end",required=false) @DateTimeFormat(pattern="dd-MM-yyyy") LocalDate endDate) throws AccountOperationNotAllowedException, AccountNotFoundException {
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String currentUsername = authentication.getName();
+		checkClientAllowanceOnAccount(SecurityContextHolder.getContext().getAuthentication(), accountId);
+		
+		Collection<TransactionData> ctransactionDto = transactionConverter.convertAll(accountService.getAccountHistory(accountId, startDate, endDate));
+		
+		return new ResponseEntity<>(ctransactionDto, HttpStatus.OK);
+		
+	}
+	
+	private void checkClientAllowanceOnAccount(Authentication auth, String accountId) throws AccountNotFoundException, AccountOperationNotAllowedException {
+		String currentUsername = auth.getName();
 		
 		if (clientService.isClient(currentUsername)) {
 			Account account = accountService.getAccountById(accountId);
@@ -98,10 +98,6 @@ public class TransactionController {
 				throw new AccountOperationNotAllowedException(String.format("User %s is not allowed on account %s", currentUsername, accountId ));
 			}
 		}
-
-		Collection<TransactionData> ctransactionDto = transactionConverter.convertAll(accountService.getAccountHistory(accountId, startDate, endDate));
-		
-		return new ResponseEntity<>(ctransactionDto, HttpStatus.OK);
 		
 	}
 	

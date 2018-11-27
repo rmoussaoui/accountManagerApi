@@ -49,7 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http
 				.authorizeRequests()
-				.antMatchers("/h2/**").permitAll()
 		        .antMatchers("/account-manager/v1/accounts/**").access("hasRole('CLIENT')")
 		        .anyRequest().authenticated()
 		        .and()
@@ -61,7 +60,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		        .and()
 		        .csrf()
 		        .disable();
-		
 	}
 
 	@Bean
