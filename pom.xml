@@ -124,7 +124,6 @@
 	   <connection>scm:git:https://github.com/rmoussaoui/accountManagerApi.git</connection>
 	   <url>https://github.com/rmoussaoui/accountManagerApi</url>
 	   <developerConnection>scm:git:https://github.com/rmoussaoui/accountManagerApi.git</developerConnection>
-	  <tag>HEAD</tag>
   </scm>
 	
 	<profiles>
