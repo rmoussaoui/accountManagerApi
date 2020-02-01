@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import fr.sg.kata.v1.data.TransactionRequestData;
@@ -32,6 +33,9 @@ public class TransactionServiceImpl implements ITransactionService  {
 	@Autowired
 	private IAmountCalculationStrategy amountCalculationStrategy;
 	
+	@Value("${theValue}")
+	private String configuredValue;
+	
 	@Override
 	public Transaction doTransaction(TransactionRequestData transactionRequestData, String accountId) throws AccountNotFoundException, InvalidTransactionAmountException {
 		
@@ -46,6 +50,12 @@ public class TransactionServiceImpl implements ITransactionService  {
 		accountRepository.save(account);
 		
 		return transactionRepository.save(transaction);
+	}
+
+	@Override
+	public String getConfigValue() {
+		
+		return configuredValue;
 	}
 	
 }

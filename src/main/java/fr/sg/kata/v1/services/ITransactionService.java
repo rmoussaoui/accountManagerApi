@@ -16,6 +16,7 @@ public interface ITransactionService {
 	 * @throws AccountNotFoundException
 	 * @throws InvalidTransactionAmountException
 	 */
-	public Transaction doTransaction(TransactionRequestData transactionRequestData, String accountId) throws AccountNotFoundException, InvalidTransactionAmountException;
+	Transaction doTransaction(TransactionRequestData transactionRequestData, String accountId) throws AccountNotFoundException, InvalidTransactionAmountException;
 
+	String getConfigValue();
 }

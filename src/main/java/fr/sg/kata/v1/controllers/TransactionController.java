@@ -101,4 +101,9 @@ public class TransactionController {
 		
 	}
 	
+	@GetMapping("/test")
+	public String doTest() {
+		return transactionService.getConfigValue();
+	}
+	
 }
